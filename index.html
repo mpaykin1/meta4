@@ -2,17 +2,18 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b0e11">
 <title>Цепочка: Meta4 Glyph World</title>
 <style>
-:root{--panel:rgba(12,15,18,.86);--line:rgba(255,255,255,.12);--text:#f6f4ed;--muted:#a7afb7;--accent:#ff9250}
+:root{--panel:rgba(12,15,18,.88);--line:rgba(255,255,255,.12);--text:#f6f4ed;--muted:#a7afb7;--accent:#ff9250}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b0e11;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overscroll-behavior:none}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+html,body{margin:0;position:fixed;inset:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:#0b0e11;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overscroll-behavior:none;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body{inset:0!important}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;overscroll-behavior:none;cursor:grab}
 canvas.dragging{cursor:grabbing}
 .panel{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:16px;box-shadow:0 16px 50px rgba(0,0,0,.28)}
-#top{position:fixed;z-index:5;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+#top{position:fixed;z-index:5;left:12px;right:12px;top:max(12px,env(safe-area-inset-top));display:flex;justify-content:space-between;gap:10px;pointer-events:none}
 #story,#stats{pointer-events:auto}
 #story{width:min(520px,calc(100vw - 24px));padding:12px 14px}
 #storyRow{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
@@ -20,7 +21,7 @@ canvas.dragging{cursor:grabbing}
 #reportBtn{white-space:nowrap;padding:7px 10px;font-size:11px}
 #stats{padding:10px 12px;display:grid;grid-template-columns:repeat(5,minmax(56px,1fr));gap:8px;min-width:390px}
 .stat{font-size:10px;color:var(--muted)}.stat b{display:block;font-size:14px;color:white;margin-top:2px}
-#bottom{position:fixed;z-index:5;left:50%;bottom:12px;transform:translateX(-50%);width:min(760px,calc(100vw - 24px));padding:10px}
+#bottom{position:fixed;z-index:5;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(760px,calc(100vw - 24px));padding:10px}
 #actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 button{border:1px solid var(--line);border-radius:12px;padding:10px 7px;background:rgba(255,255,255,.06);color:white;font:inherit;cursor:pointer;touch-action:manipulation}
 button:hover{background:rgba(255,255,255,.12)}button:active{transform:translateY(1px)}button:disabled{opacity:.34;cursor:default;transform:none}
@@ -28,12 +29,12 @@ button:hover{background:rgba(255,255,255,.12)}button:active{transform:translateY
 #log{margin-top:8px;min-height:34px;max-height:48px;overflow:hidden;font-size:11px;color:#d7dde3;line-height:1.35}
 #hint{position:fixed;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:7px 12px;font-size:11px;color:#cfd5da;opacity:.82;transition:opacity .45s}
 #hint.hide{opacity:0}
-.modal{position:fixed;z-index:20;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.56);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal{position:fixed;z-index:20;inset:0;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.56);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:none}
 .modal.show{display:flex}
-.card{width:min(520px,100%);max-height:min(78vh,680px);overflow:auto;padding:17px;border-radius:20px;background:#11161b;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.card{width:min(520px,100%);max-height:min(78dvh,680px);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding:17px;border-radius:20px;background:#11161b;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 80px rgba(0,0,0,.55);user-select:text;-webkit-user-select:text}
 .card h2{font-size:20px;margin:0 0 8px}.body{font-size:14px;line-height:1.52;color:#e7e9ea;white-space:pre-line}
 .modalBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.primary{background:#f08a49;color:#160f0a;border-color:#f5a36e;font-weight:700}.full{grid-column:1/-1}
-#reportText{white-space:pre-wrap}.tag{display:inline-block;padding:3px 7px;border:1px solid var(--line);border-radius:99px;font-size:10px;color:#cbd2d8;margin:2px 3px 0 0}
+#reportText{white-space:pre-wrap}
 @media(max-width:760px){
  #top{display:block}#stats{margin-top:8px;min-width:0;grid-template-columns:repeat(5,1fr);padding:8px}
  #bottom{bottom:max(8px,env(safe-area-inset-bottom));padding:8px}#actions{grid-template-columns:repeat(5,1fr)}.action{padding:8px 2px}.action .t{font-size:9px}
@@ -44,7 +45,7 @@ button:hover{background:rgba(255,255,255,.12)}button:active{transform:translateY
 </head>
 <body>
 <canvas id="world" aria-label="Бесконечный игровой мир"></canvas>
-<div id="hint">Проводи пальцем по миру — пространство бесконечное</div>
+<div id="hint">Тяни мир пальцем — интерфейс остаётся на месте</div>
 
 <div id="top">
   <div id="story" class="panel">
@@ -58,76 +59,168 @@ button:hover{background:rgba(255,255,255,.12)}button:active{transform:translateY
   </div>
 </div>
 
-<div id="bottom" class="panel"><div id="actions"></div><div id="log">Выбери первое изменение мира. Каждая карточка расходуется; после пяти появятся новые.</div></div>
+<div id="bottom" class="panel"><div id="actions"></div><div id="log">Выбери первое изменение мира. Постройка появится именно в видимой сейчас области.</div></div>
 
 <div id="forecastModal" class="modal"><div class="card"><h2 id="modalTitle">Прогноз</h2><div id="forecast" class="body"></div><div class="modalBtns"><button id="no">Нет</button><button id="yes" class="primary">Да, изменить мир</button></div></div></div>
-<div id="reportModal" class="modal"><div class="card"><h2>Что происходит прямо сейчас</h2><div id="reportText" class="body"></div><div class="modalBtns"><button id="closeReport" class="primary full">Вернуться в мир</button></div></div></div>
+<div id="reportModal" class="modal"><div class="card"><h2>Что происходит здесь прямо сейчас</h2><div id="reportText" class="body"></div><div class="modalBtns"><button id="closeReport" class="primary full">Вернуться в мир</button></div></div></div>
 
 <script>
 (()=>{'use strict';
 const c=document.getElementById('world'),x=c.getContext('2d',{alpha:false});
-const DPR=Math.min(2,devicePixelRatio||1);let W=innerWidth,H=innerHeight,T=0;
-function resize(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0)}addEventListener('resize',resize);resize();
+const DPR=Math.min(2,devicePixelRatio||1);let W=innerWidth,H=innerHeight,T=0,lastFrame=performance.now();
+function lockViewport(){window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}
+function resize(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);lockViewport()}
+addEventListener('resize',resize,{passive:true});addEventListener('orientationchange',()=>setTimeout(resize,80),{passive:true});resize();
+document.addEventListener('touchmove',e=>{if(!e.target.closest?.('.card'))e.preventDefault()},{passive:false});
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
 
-const S={seed:Math.floor(Math.random()*999999),turn:0,batch:0,pop:18,food:28,energy:8,eco:44,hope:36,objects:[],history:[],camera:{x:0,y:0},used:new Set(),deck:[]};
-const people=Array.from({length:18},()=>({a:Math.random()*6.28,r:40+Math.random()*190,s:.15+Math.random()*.3,o:Math.random()*999}));
+const S={seed:Math.floor(Math.random()*999999),turn:0,batch:0,pop:18,food:28,energy:8,eco:44,hope:36,objects:[],history:[],camera:{x:0,y:0},used:new Set(),deck:[],nextObjectId:1};
 const catalog=[
- {id:'city',name:'Город',glyph:'門',color:'#d69155',d:{pop:8,food:-6,energy:-5,eco:-8,hope:9},now:'Люди получат жильё и работу. Население начнёт расти.'},
- {id:'forest',name:'Лес',glyph:'木',color:'#4f9c66',d:{food:9,eco:15,hope:5,energy:-1},now:'Появится тень, вода, пища и новое живое пространство.'},
- {id:'volcano',name:'Вулкан',glyph:'火',color:'#d9563f',d:{food:-5,eco:-9,hope:-6,energy:7},now:'Земля станет опаснее, но откроются тепло и минералы.'},
- {id:'energy',name:'Энергия',glyph:'田',color:'#d7bc55',d:{energy:17,eco:-5,food:2,hope:4},now:'Появится энергия для хранения еды, света и мастерских.'},
- {id:'idea',name:'Идея',glyph:'人',color:'#7c82d9',d:{hope:14,energy:2},now:'Люди попробуют договориться, что для них действительно важно.'},
- {id:'water',name:'Вода',glyph:'水',color:'#59a9cf',d:{food:7,eco:10,hope:3},now:'Вода потянет к себе людей, растения и новые поселения.'},
- {id:'mountain',name:'Горы',glyph:'山',color:'#9b9385',d:{eco:5,energy:4,food:-2,hope:2},now:'Рельеф изменит пути, климат и места для поселений.'},
- {id:'farm',name:'Поля',glyph:'禾',color:'#a9b35e',d:{food:16,eco:-4,energy:-2,hope:3},now:'Еды станет больше, но земля станет зависеть от урожая.'},
- {id:'road',name:'Дорога',glyph:'道',color:'#b99d7b',d:{food:2,energy:-2,eco:-3,hope:6},now:'Удалённые части мира начнут обмениваться ресурсами.'},
- {id:'school',name:'Школа',glyph:'文',color:'#8c8fe4',d:{hope:11,energy:-2,food:-1},now:'Знания начнут менять решения быстрее, чем строительство.'},
- {id:'market',name:'Рынок',glyph:'貝',color:'#dc9e5f',d:{food:5,energy:2,hope:7,eco:-2},now:'Обмен ресурсов станет быстрее, вместе с ним вырастет неравенство возможностей.'},
- {id:'rain',name:'Дождь',glyph:'雨',color:'#6d9bd2',d:{food:8,eco:9,energy:-3,hope:1},now:'Мир станет влажнее; одни места оживут, другие размоет.'},
- {id:'workshop',name:'Мастерская',glyph:'工',color:'#d18a62',d:{energy:-4,food:3,hope:5,eco:-2},now:'Люди начнут превращать ресурсы в инструменты и новые возможности.'},
- {id:'medicine',name:'Лечение',glyph:'薬',color:'#68b78c',d:{pop:4,food:-2,hope:9,energy:-2},now:'Люди станут жить дольше, но нагрузка на ресурсы возрастёт.'},
- {id:'wind',name:'Ветер',glyph:'風',color:'#91b5c8',d:{energy:10,eco:2,hope:2},now:'Ветер даст энергию и изменит движение дыма, облаков и семян.'},
- {id:'bridge',name:'Мост',glyph:'橋',color:'#b68f73',d:{food:3,energy:-2,hope:7,eco:-1},now:'Разделённые территории станут одним маршрутом.'},
- {id:'night',name:'Ночь',glyph:'月',color:'#7985b5',d:{energy:-4,hope:4,eco:3},now:'Темнота замедлит работу и откроет другой ритм жизни.'},
- {id:'sun',name:'Солнце',glyph:'日',color:'#d6ad53',d:{food:6,energy:5,eco:-1,hope:4},now:'Свет ускорит рост и даст новые источники энергии.'},
- {id:'river',name:'Река',glyph:'川',color:'#4f9fc0',d:{food:8,eco:8,hope:3},now:'Река прорежет карту и станет дорогой одновременно.'},
- {id:'home',name:'Дом',glyph:'家',color:'#c49a7e',d:{pop:5,food:-2,energy:-2,hope:8},now:'У людей появится устойчивое место, которое они захотят защищать.'},
- {id:'garden',name:'Сад',glyph:'園',color:'#75a96d',d:{food:7,eco:7,hope:6},now:'Еда, красота и общая территория окажутся в одном месте.'},
- {id:'tower',name:'Башня',glyph:'塔',color:'#9d8d94',d:{energy:-3,hope:5,eco:-2},now:'Высота изменит обзор, связь и представление людей о центре мира.'},
- {id:'cloud',name:'Облака',glyph:'雲',color:'#9faeb8',d:{eco:4,food:2,energy:-1},now:'Погода станет менее предсказуемой, но земля получит влагу.'},
- {id:'fire',name:'Огонь',glyph:'炎',color:'#db664e',d:{energy:9,food:-3,eco:-7,hope:-1},now:'Тепло поможет людям, но легко выйдет из-под контроля.'},
- {id:'community',name:'Община',glyph:'衆',color:'#a27ac7',d:{hope:12,food:2,energy:1},now:'Люди начнут решать часть проблем коллективно.'}
+ {id:'city',name:'Город',glyph:'門',color:'#d69155',attract:1.00,migrate:.72,d:{pop:8,food:-6,energy:-5,eco:-8,hope:9},now:'Люди получат жильё и работу. Население начнёт расти.'},
+ {id:'forest',name:'Лес',glyph:'木',color:'#4f9c66',attract:.34,migrate:.20,d:{food:9,eco:15,hope:5,energy:-1},now:'Появится тень, вода, пища и новое живое пространство.'},
+ {id:'volcano',name:'Вулкан',glyph:'火',color:'#d9563f',attract:-.75,migrate:0,d:{food:-5,eco:-9,hope:-6,energy:7},now:'Земля станет опаснее, но откроются тепло и минералы.'},
+ {id:'energy',name:'Энергия',glyph:'田',color:'#d7bc55',attract:.55,migrate:.32,d:{energy:17,eco:-5,food:2,hope:4},now:'Появится энергия для хранения еды, света и мастерских.'},
+ {id:'idea',name:'Идея',glyph:'人',color:'#7c82d9',attract:.25,migrate:.12,d:{hope:14,energy:2},now:'Люди попробуют договориться, что для них действительно важно.'},
+ {id:'water',name:'Вода',glyph:'水',color:'#59a9cf',attract:.72,migrate:.42,d:{food:7,eco:10,hope:3},now:'Вода потянет к себе людей, растения и новые поселения.'},
+ {id:'mountain',name:'Горы',glyph:'山',color:'#9b9385',attract:.08,migrate:.05,d:{eco:5,energy:4,food:-2,hope:2},now:'Рельеф изменит пути, климат и места для поселений.'},
+ {id:'farm',name:'Поля',glyph:'禾',color:'#a9b35e',attract:.58,migrate:.30,d:{food:16,eco:-4,energy:-2,hope:3},now:'Еды станет больше, но земля станет зависеть от урожая.'},
+ {id:'road',name:'Дорога',glyph:'道',color:'#b99d7b',attract:.40,migrate:.22,d:{food:2,energy:-2,eco:-3,hope:6},now:'Удалённые части мира начнут обмениваться ресурсами.'},
+ {id:'school',name:'Школа',glyph:'文',color:'#8c8fe4',attract:.54,migrate:.30,d:{hope:11,energy:-2,food:-1},now:'Знания начнут менять решения быстрее, чем строительство.'},
+ {id:'market',name:'Рынок',glyph:'貝',color:'#dc9e5f',attract:.80,migrate:.48,d:{food:5,energy:2,hope:7,eco:-2},now:'Обмен ресурсов станет быстрее, вместе с ним вырастет неравенство возможностей.'},
+ {id:'rain',name:'Дождь',glyph:'雨',color:'#6d9bd2',attract:.10,migrate:.06,d:{food:8,eco:9,energy:-3,hope:1},now:'Мир станет влажнее; одни места оживут, другие размоет.'},
+ {id:'workshop',name:'Мастерская',glyph:'工',color:'#d18a62',attract:.72,migrate:.42,d:{energy:-4,food:3,hope:5,eco:-2},now:'Люди начнут превращать ресурсы в инструменты и новые возможности.'},
+ {id:'medicine',name:'Лечение',glyph:'薬',color:'#68b78c',attract:.68,migrate:.38,d:{pop:4,food:-2,hope:9,energy:-2},now:'Люди станут жить дольше, но нагрузка на ресурсы возрастёт.'},
+ {id:'wind',name:'Ветер',glyph:'風',color:'#91b5c8',attract:.14,migrate:.08,d:{energy:10,eco:2,hope:2},now:'Ветер даст энергию и изменит движение дыма, облаков и семян.'},
+ {id:'bridge',name:'Мост',glyph:'橋',color:'#b68f73',attract:.42,migrate:.24,d:{food:3,energy:-2,hope:7,eco:-1},now:'Разделённые территории станут одним маршрутом.'},
+ {id:'night',name:'Ночь',glyph:'月',color:'#7985b5',attract:.04,migrate:.02,d:{energy:-4,hope:4,eco:3},now:'Темнота замедлит работу и откроет другой ритм жизни.'},
+ {id:'sun',name:'Солнце',glyph:'日',color:'#d6ad53',attract:.18,migrate:.10,d:{food:6,energy:5,eco:-1,hope:4},now:'Свет ускорит рост и даст новые источники энергии.'},
+ {id:'river',name:'Река',glyph:'川',color:'#4f9fc0',attract:.78,migrate:.45,d:{food:8,eco:8,hope:3},now:'Река прорежет карту и станет дорогой одновременно.'},
+ {id:'home',name:'Дом',glyph:'家',color:'#c49a7e',attract:.88,migrate:.56,d:{pop:5,food:-2,energy:-2,hope:8},now:'У людей появится устойчивое место, которое они захотят защищать.'},
+ {id:'garden',name:'Сад',glyph:'園',color:'#75a96d',attract:.60,migrate:.34,d:{food:7,eco:7,hope:6},now:'Еда, красота и общая территория окажутся в одном месте.'},
+ {id:'tower',name:'Башня',glyph:'塔',color:'#9d8d94',attract:.30,migrate:.16,d:{energy:-3,hope:5,eco:-2},now:'Высота изменит обзор, связь и представление людей о центре мира.'},
+ {id:'cloud',name:'Облака',glyph:'雲',color:'#9faeb8',attract:.05,migrate:.02,d:{eco:4,food:2,energy:-1},now:'Погода станет менее предсказуемой, но земля получит влагу.'},
+ {id:'fire',name:'Огонь',glyph:'炎',color:'#db664e',attract:-.60,migrate:0,d:{energy:9,food:-3,eco:-7,hope:-1},now:'Тепло поможет людям, но легко выйдет из-под контроля.'},
+ {id:'community',name:'Община',glyph:'衆',color:'#a27ac7',attract:.92,migrate:.60,d:{hope:12,food:2,energy:1},now:'Люди начнут решать часть проблем коллективно.'}
 ];
 const byId=Object.fromEntries(catalog.map(a=>[a.id,a]));
 const chapters=['Безжизненная земля. Люди идут, потому что больше им некуда.','Мир заметил тебя. Решения цепляются друг за друга.','У мира появилась память. Новое меняет старое.','Люди спорят: рост, покой или смысл?','Теперь ты не строишь мир — ты договариваешься с ним.'];
 function rand(n){let v=Math.sin((S.seed+n*91.17)*12.9898)*43758.5453;return v-Math.floor(v)}
 function clamp(v){return Math.max(0,Math.min(100,Math.round(v)))}
 function stateText(){let weak=[],strong=[];[['еда',S.food],['энергия',S.energy],['природа',S.eco],['надежда',S.hope]].forEach(([n,v])=>{if(v<25)weak.push(n);if(v>70)strong.push(n)});return{weak,strong}}
+function worldToScreen(wx,wy){return{x:W/2+S.camera.x+wx,y:H/2+S.camera.y+wy}}
+function screenToWorld(sx,sy){return{x:sx-W/2-S.camera.x,y:sy-H/2-S.camera.y}}
+function playRect(){
+ const top=document.getElementById('top').getBoundingClientRect(),bottom=document.getElementById('bottom').getBoundingClientRect();
+ let t=Math.max(14,top.bottom+14),b=Math.min(H-14,bottom.top-14);
+ if(b-t<140){t=H*.34;b=H*.70}
+ return{left:18,right:W-18,top:t,bottom:b,width:Math.max(1,W-36),height:Math.max(1,b-t)}
+}
+function inVisibleWorld(wx,wy,pad=28){const p=worldToScreen(wx,wy),r=playRect();return p.x>=r.left-pad&&p.x<=r.right+pad&&p.y>=r.top-pad&&p.y<=r.bottom+pad}
 function currentDeck(){const start=(S.batch*5)%catalog.length;return Array.from({length:5},(_,i)=>catalog[(start+i)%catalog.length])}
-function renderDeck(){S.deck=currentDeck();S.used.clear();const box=document.getElementById('actions');box.innerHTML='';S.deck.forEach(a=>{const b=document.createElement('button');b.className='action';b.dataset.a=a.id;b.innerHTML=`<span class="g">${a.glyph}</span><span class="t">${a.name}</span>`;b.onclick=()=>openForecast(a.id,b);box.appendChild(b)})}
-function forecastFor(k){const a=byId[k],q=stateText(),surprise=Math.floor(rand(S.turn+17)*5);const risks=q.weak.length?`Сейчас слабые места: ${q.weak.join(', ')}.`:'Критических дефицитов сейчас нет.';const later=S.pop>45?'Большое население усилит любой эффект — хороший и плохой.':S.eco<30?'Ослабленная природа сделает дальнейшие решения дороже.':'Следующие действия смогут усилить или компенсировать этот эффект.';const twists=['Люди сами проложат новую тропу.','Возникнет спор о том, кому достанется выгода.','Рядом появится маленькое новое поселение.','Дети начнут использовать это совсем не так, как взрослые задумали.','Мир изменит привычные маршруты людей.'];return `Сейчас:\n${a.now}\n\nДальше:\n${later}\n\nРиск:\n${risks}\n\nНеожиданный эффект:\n${twists[surprise]}`}
+function renderDeck(){S.deck=currentDeck();S.used.clear();const box=document.getElementById('actions');box.innerHTML='';S.deck.forEach(a=>{const b=document.createElement('button');b.className='action';b.dataset.a=a.id;b.innerHTML='<span class="g">'+a.glyph+'</span><span class="t">'+a.name+'</span>';b.onclick=()=>openForecast(a.id,b);box.appendChild(b)})}
+function forecastFor(k){const a=byId[k],q=stateText(),surprise=Math.floor(rand(S.turn+17)*5);const risks=q.weak.length?'Сейчас слабые места мира: '+q.weak.join(', ')+'.':'Критических дефицитов сейчас нет.';const later=S.pop>45?'Большое население усилит любой эффект — хороший и плохой.':S.eco<30?'Ослабленная природа сделает дальнейшие решения дороже.':'Следующие действия смогут усилить или компенсировать этот эффект.';const twists=['Люди сами проложат новую тропу.','Возникнет спор о том, кому достанется выгода.','Рядом появится маленькое новое поселение.','Дети начнут использовать это совсем не так, как взрослые задумали.','Мир изменит привычные маршруты людей.'];return 'Сейчас:\n'+a.now+'\n\nДальше:\n'+later+'\n\nРиск:\n'+risks+'\n\nНеожиданный эффект:\n'+twists[surprise]}
 let pending=null,pendingButton=null;
-function openForecast(id,b){pending=id;pendingButton=b;const a=byId[id];document.getElementById('modalTitle').textContent=`${a.glyph} ${a.name}: прогноз`;document.getElementById('forecast').textContent=forecastFor(id);document.getElementById('forecastModal').classList.add('show')}
+function openForecast(id,b){pending=id;pendingButton=b;const a=byId[id];document.getElementById('modalTitle').textContent=a.glyph+' '+a.name+': прогноз';document.getElementById('forecast').textContent=forecastFor(id);document.getElementById('forecastModal').classList.add('show')}
 document.getElementById('no').onclick=()=>{pending=null;pendingButton=null;document.getElementById('forecastModal').classList.remove('show')};
 document.getElementById('yes').onclick=()=>{if(!pending)return;apply(pending);if(pendingButton){pendingButton.disabled=true;pendingButton.classList.add('used')}S.used.add(pending);pending=null;pendingButton=null;document.getElementById('forecastModal').classList.remove('show');if(S.used.size===5)setTimeout(nextDeck,220)};
-function nextDeck(){S.batch++;renderDeck();document.getElementById('log').textContent=`Появилась новая пятёрка действий — поколение ${S.batch+1}. Цепочка продолжается.`}
-function addObj(k){const spread=180+S.turn*11;const a=rand(S.turn*7+3)*Math.PI*2;const r=70+rand(S.turn*11+2)*Math.min(850,spread);S.objects.push({k,x:Math.cos(a)*r,y:Math.sin(a)*r*.62,scale:.72+rand(S.turn*13+3)*.9,born:T})}
-function apply(k){const a=byId[k];S.turn++;addObj(k);for(const [q,v] of Object.entries(a.d))S[q]=(S[q]||0)+v;if(k==='idea')S.food+=Math.round((S.eco-40)/12);if(S.energy>55&&S.pop>35){S.food+=5;S.hope+=4}if(S.eco>65){S.food+=4;S.hope+=3}if(S.food<12){S.pop-=3;S.hope-=8}if(S.energy<8&&S.pop>30)S.hope-=5;if(S.pop>55&&S.eco<25){S.food-=6;S.hope-=6}S.pop=Math.max(3,Math.round(S.pop));['food','energy','eco','hope'].forEach(q=>S[q]=clamp(S[q]));while(people.length<S.pop)people.push({a:Math.random()*6.28,r:40+Math.random()*190,s:.15+Math.random()*.3,o:Math.random()*999});if(people.length>S.pop)people.length=S.pop;S.history.unshift({turn:S.turn,name:a.name,glyph:a.glyph,state:{pop:S.pop,food:S.food,energy:S.energy,eco:S.eco,hope:S.hope}});S.history=S.history.slice(0,40);updateUI(a)}
-function updateUI(a){['pop','food','energy','eco','hope'].forEach(id=>document.getElementById(id).textContent=S[id]);const chapter=chapters[Math.min(chapters.length-1,Math.floor(S.turn/4))];document.getElementById('chapter').textContent=`Ход ${S.turn}. ${chapter}`;const q=stateText();let msg=`${a.glyph} ${a.name} изменил мир. `;if(q.weak.length)msg+=`Слабое место: ${q.weak.join(', ')}. `;if(q.strong.length)msg+=`Опора: ${q.strong.join(', ')}.`;document.getElementById('log').textContent=msg}
-function report(){const q=stateText(),last=S.history.slice(0,7);const trend=(v)=>v<25?'критически мало':v<45?'мало':v<70?'устойчиво':'много';const dominant=[['еда',S.food],['энергия',S.energy],['природа',S.eco],['надежда',S.hope]].sort((a,b)=>b[1]-a[1])[0];const recent=last.length?last.map(h=>`• ${h.turn}. ${h.glyph} ${h.name} → люди ${h.state.pop}, еда ${h.state.food}, энергия ${h.state.energy}, природа ${h.state.eco}, надежда ${h.state.hope}`).join('\n'):'• Мир ещё не менялся.';return `Состояние мира, ход ${S.turn}\n\nЛюди: ${S.pop}\nЕда: ${S.food} — ${trend(S.food)}\nЭнергия: ${S.energy} — ${trend(S.energy)}\nПрирода: ${S.eco} — ${trend(S.eco)}\nНадежда: ${S.hope} — ${trend(S.hope)}\n\nГлавная опора сейчас: ${dominant[0]} (${dominant[1]}).\n${q.weak.length?'Риски: '+q.weak.join(', ')+'.':'Явных критических дефицитов нет.'}\n${q.strong.length?'Сильные стороны: '+q.strong.join(', ')+'.':''}\n\nЧто происходило недавно:\n${recent}\n\nКарта: x ${Math.round(S.camera.x)}, y ${Math.round(S.camera.y)}. Можно двигаться дальше в любую сторону — границы мира не заданы.`}
-document.getElementById('reportBtn').onclick=()=>{document.getElementById('reportText').textContent=report();document.getElementById('reportModal').classList.add('show')};document.getElementById('closeReport').onclick=()=>document.getElementById('reportModal').classList.remove('show');
+function nextDeck(){S.batch++;renderDeck();document.getElementById('log').textContent='Появилась новая пятёрка действий — поколение '+(S.batch+1)+'. Цепочка продолжается.'}
+
+function makePerson(wx,wy,i){return{x:wx+(rand(i*31+7)-.5)*46,y:wy+(rand(i*31+8)-.5)*32,vx:0,vy:0,target:null,o:rand(i*31+9)*999}}
+const people=Array.from({length:18},(_,i)=>{const a=rand(i*3+1)*Math.PI*2,r=45+rand(i*3+2)*190;return makePerson(Math.cos(a)*r,Math.sin(a)*r*.58,i)});
+function addObj(k){
+ const r=playRect(),rx=.18+rand(S.turn*17+2)*.64,ry=.18+rand(S.turn*19+3)*.64;
+ const sx=r.left+r.width*rx,sy=r.top+r.height*ry,w=screenToWorld(sx,sy);
+ const o={uid:S.nextObjectId++,k,x:w.x,y:w.y,scale:.78+rand(S.turn*13+3)*.72,born:T};
+ S.objects.push(o);redirectMigrants(o);return o
+}
+function redirectMigrants(o){
+ const a=byId[o.k];if(!a||a.migrate<=0)return;
+ people.forEach((p,i)=>{const chance=a.migrate*(.72+.56*rand(S.turn*101+i));if(rand(S.turn*1009+i*17)<chance)p.target=o.uid})
+}
+function bestTarget(p,i){
+ let best=null,bestScore=.04;
+ for(const o of S.objects){const a=byId[o.k];if(!a||a.attract<=0)continue;const d=Math.hypot(o.x-p.x,o.y-p.y);const score=a.attract*(.72+.56*rand(i*73+o.uid*11))/(1+d/1150);if(score>bestScore){bestScore=score;best=o}}
+ return best
+}
+function ensurePopulation(anchor,oldCount){
+ while(people.length<S.pop){const i=people.length;people.push(makePerson(anchor?.x||0,anchor?.y||0,i))}
+ if(people.length>S.pop)people.length=S.pop;
+ if(anchor&&S.pop>oldCount){for(let i=Math.max(0,oldCount);i<people.length;i++)people[i].target=anchor.uid}
+}
+function stepPeople(dt){
+ const map=new Map(S.objects.map(o=>[o.uid,o]));
+ people.forEach((p,i)=>{
+   let target=map.get(p.target);if(!target||rand(Math.floor(T/5000)+i*13)<.002){target=bestTarget(p,i);p.target=target?.uid||null}
+   let ax=0,ay=0;
+   if(target){const dx=target.x-p.x,dy=target.y-p.y,d=Math.max(1,Math.hypot(dx,dy));if(d>20){const accel=.85;ax+=dx/d*accel;ay+=dy/d*accel}}
+   for(const o of S.objects){const a=byId[o.k];if(!a||a.attract>=0)continue;const dx=p.x-o.x,dy=p.y-o.y,d=Math.max(1,Math.hypot(dx,dy));if(d<180){const force=(-a.attract)*(1-d/180)*2.2;ax+=dx/d*force;ay+=dy/d*force}}
+   ax+=(rand(i*97+Math.floor(T/900))-.5)*.12;ay+=(rand(i*107+Math.floor(T/1100))-.5)*.12;
+   p.vx=(p.vx+ax*dt*22)*Math.pow(.985,dt*60);p.vy=(p.vy+ay*dt*22)*Math.pow(.985,dt*60);
+   const speed=Math.hypot(p.vx,p.vy),max=18+(i%7);if(speed>max){p.vx=p.vx/speed*max;p.vy=p.vy/speed*max}
+   p.x+=p.vx*dt;p.y+=p.vy*dt
+ })
+}
+function apply(k){
+ const a=byId[k],oldPop=S.pop;S.turn++;const placed=addObj(k);
+ for(const [q,v] of Object.entries(a.d))S[q]=(S[q]||0)+v;
+ if(k==='idea')S.food+=Math.round((S.eco-40)/12);if(S.energy>55&&S.pop>35){S.food+=5;S.hope+=4}if(S.eco>65){S.food+=4;S.hope+=3}if(S.food<12){S.pop-=3;S.hope-=8}if(S.energy<8&&S.pop>30)S.hope-=5;if(S.pop>55&&S.eco<25){S.food-=6;S.hope-=6}
+ S.pop=Math.max(3,Math.round(S.pop));['food','energy','eco','hope'].forEach(q=>S[q]=clamp(S[q]));ensurePopulation(placed,oldPop);
+ S.history.unshift({turn:S.turn,name:a.name,glyph:a.glyph,k,x:placed.x,y:placed.y,state:{pop:S.pop,food:S.food,energy:S.energy,eco:S.eco,hope:S.hope}});S.history=S.history.slice(0,80);updateUI(a,placed)
+}
+function updateUI(a,placed){['pop','food','energy','eco','hope'].forEach(id=>document.getElementById(id).textContent=S[id]);const chapter=chapters[Math.min(chapters.length-1,Math.floor(S.turn/4))];document.getElementById('chapter').textContent='Ход '+S.turn+'. '+chapter;const p=worldToScreen(placed.x,placed.y);document.getElementById('log').textContent=a.glyph+' '+a.name+' появился здесь — x '+Math.round(p.x)+', y '+Math.round(p.y)+'. Люди реагируют на новые причины для миграции.'}
+
+function visibleObjects(){return S.objects.filter(o=>inVisibleWorld(o.x,o.y,12))}
+function visiblePeople(){return people.filter(p=>inVisibleWorld(p.x,p.y,5))}
+function localInfluence(objs){const v={food:0,energy:0,eco:0,hope:0,pop:0};for(const o of objs){const d=byId[o.k]?.d||{};for(const q of Object.keys(v))v[q]+=d[q]||0}return v}
+function report(){
+ const objs=visibleObjects(),ppl=visiblePeople(),inf=localInfluence(objs),r=playRect();
+ const counts={};objs.forEach(o=>{const n=byId[o.k].name;counts[n]=(counts[n]||0)+1});
+ const names=Object.entries(counts).map(([n,v])=>n+(v>1?' ×'+v:'')).join(', ')||'пока нет построек';
+ const recent=S.history.filter(h=>inVisibleWorld(h.x,h.y,12)).slice(0,7);
+ const events=recent.length?recent.map(h=>'• '+h.turn+'. '+h.glyph+' '+h.name).join('\n'):'• В этой области ещё не было действий.';
+ const migrants=ppl.filter(p=>{const t=S.objects.find(o=>o.uid===p.target);return t&&inVisibleWorld(t.x,t.y,12)&&Math.hypot(t.x-p.x,t.y-p.y)>35}).length;
+ const fmt=n=>(n>0?'+':'')+n;
+ return 'ВИДИМАЯ ОБЛАСТЬ, ход '+S.turn+
+ '\n\nЛюдей сейчас видно: '+ppl.length+
+ '\nОбъекты: '+names+
+ '\nЛюдей, которые сейчас идут к местным точкам притяжения: '+migrants+
+ '\n\nЛокальное влияние видимых построек:'+
+ '\nЕда '+fmt(inf.food)+' · энергия '+fmt(inf.energy)+' · природа '+fmt(inf.eco)+' · надежда '+fmt(inf.hope)+
+ '\n\nСобытия именно этой области:\n'+events+
+ '\n\nКамера смотрит на мировой участок x '+Math.round(-S.camera.x)+', y '+Math.round(-S.camera.y)+
+ '. Отчёт намеренно не включает объекты и события за пределами текущего экрана.'
+}
+document.getElementById('reportBtn').onclick=()=>{document.getElementById('reportText').textContent=report();document.getElementById('reportModal').classList.add('show')};
+document.getElementById('closeReport').onclick=()=>document.getElementById('reportModal').classList.remove('show');
 
 let drag=false,lastX=0,lastY=0,moved=0;
-c.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;moved=0;c.setPointerCapture?.(e.pointerId);c.classList.add('dragging')});
-c.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;S.camera.x+=dx;S.camera.y+=dy;lastX=e.clientX;lastY=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(moved>8)document.getElementById('hint').classList.add('hide')});
-function endDrag(e){drag=false;c.classList.remove('dragging');try{c.releasePointerCapture?.(e.pointerId)}catch{}}c.addEventListener('pointerup',endDrag);c.addEventListener('pointercancel',endDrag);
+c.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();drag=true;lastX=e.clientX;lastY=e.clientY;moved=0;c.setPointerCapture?.(e.pointerId);c.classList.add('dragging')});
+c.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const dx=e.clientX-lastX,dy=e.clientY-lastY;S.camera.x+=dx;S.camera.y+=dy;lastX=e.clientX;lastY=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);if(moved>8)document.getElementById('hint').classList.add('hide');lockViewport()});
+function endDrag(e){if(!drag)return;e.preventDefault();drag=false;c.classList.remove('dragging');try{c.releasePointerCapture?.(e.pointerId)}catch{}lockViewport()}
+c.addEventListener('pointerup',endDrag);c.addEventListener('pointercancel',endDrag);c.addEventListener('contextmenu',e=>e.preventDefault());
 
 function gridHash(ix,iy,s=0){return rand(ix*9283+iy*6113+s*101)}
-function bg(){x.fillStyle='#0b0e11';x.fillRect(0,0,W,H);const spacing=170,wx0=-S.camera.x-W/2,wy0=-S.camera.y-H/2;const minX=Math.floor(wx0/spacing)-2,maxX=Math.ceil((wx0+W)/spacing)+2,minY=Math.floor(wy0/spacing)-2,maxY=Math.ceil((wy0+H)/spacing)+2;x.save();x.translate(W/2+S.camera.x,H/2+S.camera.y);for(let iy=minY;iy<=maxY;iy++)for(let ix=minX;ix<=maxX;ix++){const cx=ix*spacing+(gridHash(ix,iy,1)-.5)*80,cy=iy*spacing+(gridHash(ix,iy,2)-.5)*70;const r=18+gridHash(ix,iy,3)*55;const g=x.createRadialGradient(cx,cy,2,cx,cy,r*2.2);g.addColorStop(0,'rgba(125,117,103,.10)');g.addColorStop(1,'rgba(10,12,13,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r*2.2,0,7);x.fill();x.strokeStyle='rgba(223,196,159,.085)';x.lineWidth=1;x.beginPath();let px=cx-r*.45,py=cy-r*.1;x.moveTo(px,py);for(let j=0;j<5;j++){px+=(gridHash(ix,iy,10+j)-.5)*r;py+=(gridHash(ix,iy,20+j)-.5)*r*.7;x.lineTo(px,py)}x.stroke()}x.restore()}
-function drawGlyph(o){const a=byId[o.k],cx=W/2+S.camera.x+o.x,cy=H/2+S.camera.y+o.y;let age=Math.min(1,(T-o.born)/700),s=o.scale*age;x.save();x.translate(cx,cy);x.scale(s,s);x.font='900 74px Georgia,"Times New Roman",serif';x.textAlign='center';x.textBaseline='middle';x.shadowBlur=22;x.shadowColor=a.color;x.fillStyle=a.color;x.globalAlpha=.25;x.fillText(a.glyph,3,7);x.shadowBlur=4;x.globalAlpha=.95;x.fillText(a.glyph,0,0);x.restore()}
-function drawPeople(){const maxR=250;people.forEach((p,i)=>{p.a+=.0015*p.s;p.r+=Math.sin((T+p.o)*.0007)*.012;const rr=Math.min(maxR,p.r),px=W/2+S.camera.x+Math.cos(p.a+i*.2)*rr,py=H/2+S.camera.y+Math.sin(p.a+i*.2)*rr*.58;x.fillStyle='rgba(239,224,197,.82)';x.beginPath();x.arc(px,py-4,2.2,0,7);x.fill();x.strokeStyle='rgba(239,224,197,.72)';x.lineWidth=1.2;x.beginPath();x.moveTo(px,py-2);x.lineTo(px,py+5);x.moveTo(px,py+1);x.lineTo(px-3,py+3);x.moveTo(px,py+1);x.lineTo(px+3,py+3);x.moveTo(px,py+5);x.lineTo(px-2,py+9);x.moveTo(px,py+5);x.lineTo(px+2,py+9);x.stroke()})}
-function worldCore(){x.save();x.translate(W/2+S.camera.x,H/2+S.camera.y);x.strokeStyle='rgba(255,255,255,.07)';for(let r=55;r<220;r+=38){x.beginPath();x.ellipse(0,0,r,r*.58,0,0,7);x.stroke()}x.restore()}
-function loop(t){T=t;bg();worldCore();S.objects.forEach(drawGlyph);drawPeople();requestAnimationFrame(loop)}
+function bg(){
+ x.fillStyle='#0b0e11';x.fillRect(0,0,W,H);
+ const spacing=170,wx0=-S.camera.x-W/2,wy0=-S.camera.y-H/2,minX=Math.floor(wx0/spacing)-2,maxX=Math.ceil((wx0+W)/spacing)+2,minY=Math.floor(wy0/spacing)-2,maxY=Math.ceil((wy0+H)/spacing)+2;
+ x.save();x.translate(W/2+S.camera.x,H/2+S.camera.y);
+ for(let iy=minY;iy<=maxY;iy++)for(let ix=minX;ix<=maxX;ix++){const cx=ix*spacing+(gridHash(ix,iy,1)-.5)*80,cy=iy*spacing+(gridHash(ix,iy,2)-.5)*70,r=18+gridHash(ix,iy,3)*55,g=x.createRadialGradient(cx,cy,2,cx,cy,r*2.2);g.addColorStop(0,'rgba(125,117,103,.10)');g.addColorStop(1,'rgba(10,12,13,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r*2.2,0,7);x.fill();x.strokeStyle='rgba(223,196,159,.085)';x.lineWidth=1;x.beginPath();let px=cx-r*.45,py=cy-r*.1;x.moveTo(px,py);for(let j=0;j<5;j++){px+=(gridHash(ix,iy,10+j)-.5)*r;py+=(gridHash(ix,iy,20+j)-.5)*r*.7;x.lineTo(px,py)}x.stroke()}
+ x.restore()
+}
+function drawGlyph(o){const a=byId[o.k],p=worldToScreen(o.x,o.y),age=Math.min(1,(T-o.born)/700),s=o.scale*age;x.save();x.translate(p.x,p.y);x.scale(s,s);x.font='900 74px Georgia,"Times New Roman",serif';x.textAlign='center';x.textBaseline='middle';x.shadowBlur=22;x.shadowColor=a.color;x.fillStyle=a.color;x.globalAlpha=.25;x.fillText(a.glyph,3,7);x.shadowBlur=4;x.globalAlpha=.95;x.fillText(a.glyph,0,0);x.restore()}
+function drawPeople(){people.forEach((p,i)=>{const s=worldToScreen(p.x,p.y);if(s.x<-20||s.x>W+20||s.y<-20||s.y>H+20)return;x.fillStyle='rgba(239,224,197,.82)';x.beginPath();x.arc(s.x,s.y-4,2.2,0,7);x.fill();x.strokeStyle='rgba(239,224,197,.72)';x.lineWidth=1.2;x.beginPath();x.moveTo(s.x,s.y-2);x.lineTo(s.x,s.y+5);x.moveTo(s.x,s.y+1);x.lineTo(s.x-3,s.y+3);x.moveTo(s.x,s.y+1);x.lineTo(s.x+3,s.y+3);x.moveTo(s.x,s.y+5);x.lineTo(s.x-2,s.y+9);x.moveTo(s.x,s.y+5);x.lineTo(s.x+2,s.y+9);x.stroke()})}
+function worldCore(){const p=worldToScreen(0,0);x.save();x.translate(p.x,p.y);x.strokeStyle='rgba(255,255,255,.07)';for(let r=55;r<220;r+=38){x.beginPath();x.ellipse(0,0,r,r*.58,0,0,7);x.stroke()}x.restore()}
+function loop(t){T=t;const dt=Math.min(.05,(t-lastFrame)/1000||.016);lastFrame=t;stepPeople(dt);bg();worldCore();S.objects.forEach(drawGlyph);drawPeople();requestAnimationFrame(loop)}
+
+window.Meta4Debug={
+ state:S,people,worldToScreen,screenToWorld,playRect,
+ visibleObjects:()=>visibleObjects().map(o=>({uid:o.uid,k:o.k,x:o.x,y:o.y,screen:worldToScreen(o.x,o.y)})),
+ visiblePeople:()=>visiblePeople().length,
+ report,
+ panBy:(dx,dy)=>{S.camera.x+=dx;S.camera.y+=dy;lockViewport()},
+ build:(id)=>apply(id)
+};
 renderDeck();requestAnimationFrame(loop);
 })();
 </script>
